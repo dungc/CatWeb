@@ -18,7 +18,6 @@ def index(request):
     return web.Response(body=b'<h1>Awesome</h1>')
 
 @asyncio.coroutine
-
 def init(loop):
     app = web.Application(loop=loop)
     app.router.add_route('GET', '/', index)
