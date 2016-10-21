@@ -7,7 +7,6 @@ import asyncio, logging
 
 import aiomysql
 
-
 def log(sql, args=()):
     logging.info('SQL: %s' % sql)
 
@@ -233,7 +232,7 @@ class Model(dict, metaclass=ModelMetaclass):
         if rows != 1:
             logging.warning('failed to remove by primary key: affected rows: %s' % rows)
 
-"""
+'''
 class User(Model):
     __table__ = 'users'
 
@@ -246,4 +245,4 @@ class User(Model):
 
 u = User(id=12345, name='Michael')
 u.save()
-"""
+'''
