@@ -1,4 +1,4 @@
-/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.25.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(UI) {
 
     "use strict";
@@ -9,8 +9,7 @@
 
         defaults: {
             cls: 'uk-margin-small-top',
-            rowfirst: false,
-            observe: false
+            rowfirst: false
         },
 
         boot: function() {
@@ -18,12 +17,12 @@
             // init code
             UI.ready(function(context) {
 
-                UI.$('[data-uk-margin]', context).each(function() {
+                UI.$("[data-uk-margin]", context).each(function() {
 
                     var ele = UI.$(this);
 
-                    if (!ele.data('stackMargin')) {
-                        UI.stackMargin(ele, UI.Utils.options(ele.attr('data-uk-margin')));
+                    if (!ele.data("stackMargin")) {
+                        UI.stackMargin(ele, UI.Utils.options(ele.attr("data-uk-margin")));
                     }
                 });
             });
@@ -41,22 +40,19 @@
 
                 UI.$(function() {
                     fn();
-                    UI.$win.on('load', fn);
+                    UI.$win.on("load", fn);
                 });
 
                 return UI.Utils.debounce(fn, 20);
             })());
 
-            this.on('display.uk.check', function(e) {
-                if (this.element.is(':visible')) this.process();
+            UI.$html.on("changed.uk.dom", function(e) {
+                $this.process();
+            });
+
+            this.on("display.uk.check", function(e) {
+                if (this.element.is(":visible")) this.process();
             }.bind(this));
-
-            if (this.options.observe) {
-
-                UI.domObserve(this.element, function(e) {
-                    if ($this.element.is(':visible')) $this.process();
-                });
-            }
 
             stacks.push(this);
         },
@@ -67,25 +63,18 @@
 
             UI.Utils.stackMargin(columns, this.options);
 
-            if (!this.options.rowfirst || !columns.length) {
+            if (!this.options.rowfirst) {
                 return this;
             }
 
             // Mark first column elements
-            var group = {}, minleft = false;
+            var pos_cache = columns.removeClass(this.options.rowfirst).filter(':visible').first().position();
 
-            columns.removeClass(this.options.rowfirst).each(function(offset, $ele){
-
-                $ele = UI.$(this);
-
-                if (this.style.display != 'none') {
-                    offset = $ele.offset().left;
-                    ((group[offset] = group[offset] || []) && group[offset]).push(this);
-                    minleft = minleft === false ? offset : Math.min(minleft, offset);
-                }
-            });
-
-            UI.$(group[minleft]).addClass(this.options.rowfirst);
+            if (pos_cache) {
+                columns.each(function() {
+                    UI.$(this)[UI.$(this).position().left == pos_cache.left ? 'addClass':'removeClass']($this.options.rowfirst);
+                });
+            }
 
             return this;
         }
@@ -106,7 +95,7 @@
                 ratio  = (width / iwidth),
                 height = Math.floor(ratio * ele.data('height'));
 
-            ele.css({height: (width < iwidth) ? height : ele.data('height')});
+            ele.css({'height': (width < iwidth) ? height : ele.data('height')});
         };
 
         UI.component('responsiveElement', {
@@ -118,11 +107,11 @@
                 // init code
                 UI.ready(function(context) {
 
-                    UI.$('iframe.uk-responsive-width, [data-uk-responsive]', context).each(function() {
+                    UI.$("iframe.uk-responsive-width, [data-uk-responsive]", context).each(function() {
 
                         var ele = UI.$(this), obj;
 
-                        if (!ele.data('responsiveElement')) {
+                        if (!ele.data("responsiveElement")) {
                             obj = UI.responsiveElement(ele, {});
                         }
                     });
@@ -136,8 +125,10 @@
                 if (ele.attr('width') && ele.attr('height')) {
 
                     ele.data({
-                        width : ele.attr('width'),
-                        height: ele.attr('height')
+
+                        'width' : ele.attr('width'),
+                        'height': ele.attr('height')
+
                     }).on('display.uk.check', function(){
                         check(ele);
                     });
@@ -160,49 +151,39 @@
     })();
 
 
+
     // helper
 
     UI.Utils.stackMargin = function(elements, options) {
 
         options = UI.$.extend({
-            cls: 'uk-margin-small-top'
+            'cls': 'uk-margin-small-top'
         }, options);
+
+        options.cls = options.cls;
 
         elements = UI.$(elements).removeClass(options.cls);
 
-        var min = false;
+        var skip         = false,
+            firstvisible = elements.filter(":visible:first"),
+            offset       = firstvisible.length ? (firstvisible.position().top + firstvisible.outerHeight()) - 1 : false; // (-1): weird firefox bug when parent container is display:flex
 
-        elements.each(function(offset, height, pos, $ele){
+        if (offset === false || elements.length == 1) return;
 
-            $ele   = UI.$(this);
+        elements.each(function() {
 
-            if ($ele.css('display') != 'none') {
+            var column = UI.$(this);
 
-                offset = $ele.offset();
-                height = $ele.outerHeight();
-                pos    = offset.top + height;
+            if (column.is(":visible")) {
 
-                $ele.data({
-                    ukMarginPos: pos,
-                    ukMarginTop: offset.top
-                });
+                if (skip) {
+                    column.addClass(options.cls);
+                } else {
 
-                if (min === false || (offset.top < min.top) ) {
-
-                    min = {
-                        top  : offset.top,
-                        left : offset.left,
-                        pos  : pos
-                    };
+                    if (column.position().top >= offset) {
+                        skip = column.addClass(options.cls);
+                    }
                 }
-            }
-
-        }).each(function($ele) {
-
-            $ele   = UI.$(this);
-
-            if ($ele.css('display') != 'none' && $ele.data('ukMarginTop') > min.top && $ele.data('ukMarginPos') > min.pos) {
-                $ele.addClass(options.cls);
             }
         });
     };
@@ -312,24 +293,5 @@
         });
 
     })({});
-
-    UI.Utils.getCssVar = function(name) {
-
-        /* usage in css:  .var-name:before { content:"xyz" } */
-
-        var val, doc = document.documentElement, element = doc.appendChild(document.createElement('div'));
-
-        element.classList.add('var-'+name);
-
-        try {
-            val = JSON.parse(val = getComputedStyle(element, ':before').content.replace(/^["'](.*)["']$/, '$1'));
-        } catch (e) {
-            val = undefined;
-        }
-
-        doc.removeChild(element);
-
-        return val;
-    }
 
 })(UIkit);

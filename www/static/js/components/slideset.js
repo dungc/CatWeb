@@ -1,4 +1,4 @@
-/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.25.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(addon) {
 
     var component;
@@ -7,8 +7,8 @@
         component = addon(UIkit);
     }
 
-    if (typeof define == 'function' && define.amd) {
-        define('uikit-slideset', ['uikit'], function(){
+    if (typeof define == "function" && define.amd) {
+        define("uikit-slideset", ["uikit"], function(){
             return component || addon(UIkit);
         });
     }
@@ -40,12 +40,12 @@
             // auto init
             UI.ready(function(context) {
 
-                UI.$('[data-uk-slideset]', context).each(function(){
+                UI.$("[data-uk-slideset]", context).each(function(){
 
                     var ele = UI.$(this);
 
-                    if(!ele.data('slideset')) {
-                        UI.slideset(ele, UI.Utils.options(ele.attr('data-uk-slideset')));
+                    if(!ele.data("slideset")) {
+                        UI.slideset(ele, UI.Utils.options(ele.attr("data-uk-slideset")));
                     }
                 });
             });
@@ -60,8 +60,8 @@
             this.nav       = this.element.find('.uk-slideset-nav');
             this.controls  = this.options.controls ? UI.$(this.options.controls) : this.element;
 
-            UI.$win.on('resize load', UI.Utils.debounce(function() {
-                $this.update();
+            UI.$win.on("resize load", UI.Utils.debounce(function() {
+                $this.updateSets();
             }, 100));
 
             $this.list.addClass('uk-grid-width-1-'+$this.options.default);
@@ -75,7 +75,7 @@
                 $this.list.addClass('uk-grid-width-'+bp+'-1-'+$this.options[bp]);
             });
 
-            this.on('click.uk.slideset', '[data-uk-slideset-item]', function(e) {
+            this.on("click.uk.slideset", '[data-uk-slideset-item]', function(e) {
 
                 e.preventDefault();
 
@@ -116,7 +116,7 @@
 
                 $this._hide().then(function(){
 
-                    $this.update(true, true);
+                    $this.updateSets(true, true);
                 });
             });
 
@@ -125,7 +125,7 @@
             });
 
             this.updateFilter(this.options.filter);
-            this.update();
+            this.updateSets();
 
             this.element.on({
                 mouseenter: function() { if ($this.options.pauseOnHover) $this.hovering = true;  },
@@ -136,15 +136,9 @@
             if (this.options.autoplay) {
                 this.start();
             }
-
-            UI.domObserve(this.list, function(e) {
-                if ($this.list.children(':visible:not(.uk-active)').length) {
-                    $this.update(false,true);
-                }
-            });
         },
 
-        update: function(animate, force) {
+        updateSets: function(animate, force) {
 
             var visible = this.visible, i;
 
@@ -423,8 +417,6 @@
             clsOut = clsIn;
         }
 
-        UI.$body.css('overflow-x', 'hidden'); // prevent horizontal scrollbar on animation
-
         release = function() {
 
             if (current && current.length) {
@@ -443,7 +435,6 @@
             var finish = function() {
                 next.removeClass(''+clsIn+'').css({opacity:'', display:'', 'animation-delay':'', 'animation':''});
                 d.resolve();
-                UI.$body.css('overflow-x', '');
                 $this.element.css('min-height', '');
                 finish = false;
             };

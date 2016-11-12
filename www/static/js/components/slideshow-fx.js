@@ -1,4 +1,4 @@
-/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.25.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(addon) {
 
     var component;
@@ -7,8 +7,8 @@
         component = addon(UIkit);
     }
 
-    if (typeof define == 'function' && define.amd) {
-        define('uikit-slideshow-fx', ['uikit'], function() {
+    if (typeof define == "function" && define.amd) {
+        define("uikit-slideshow-fx", ["uikit"], function() {
             return component || addon(UIkit);
         });
     }
@@ -20,7 +20,7 @@
     var Animations = UI.slideshow.animations;
 
     UI.$.extend(UI.slideshow.animations, {
-        slice: function(current, next, dir, fromfx) {
+        'slice': function(current, next, dir, fromfx) {
 
             if (!current.data('cover')) {
                 return Animations.fade.apply(this, arguments);
@@ -30,7 +30,7 @@
 
             var sliceWidth = Math.ceil(this.element.width() / this.options.slices),
                 bgimage    = next.data('cover').css('background-image'),
-                ghost      = UI.$('<li class="uk-slideshow-ghost"></li>').css({
+                ghost      = UI.$('<li></li>').css({
                     top    : 0,
                     left   : 0,
                     width  : this.container.width(),
@@ -80,18 +80,19 @@
             this.container.append(ghost);
 
             ghost.children().last().on(UI.support.transition.end, function() {
-
-                setTimeout(function() {
-                    ghost.remove();
-                    d.resolve();
-                }, 0);
+                ghost.remove();
+                d.resolve();
             });
 
             ghost.width();
 
             ghost.children().each(function() {
-                bar = UI.$(this);
-                bar.css({ clip: bar.data('clip'), opacity: 1 });
+                var bar = UI.$(this);
+
+                bar.css({
+                    'clip': bar.data('clip'),
+                    'opacity': 1
+                });
             });
 
             return d.promise();
@@ -109,7 +110,7 @@
             return Animations.slice.apply(this, [current, next, dir, 'slice-up-down']);
         },
 
-        fold: function(current, next, dir) {
+        'fold': function(current, next, dir) {
 
             if (!next.data('cover')) {
                 return Animations.fade.apply(this, arguments);
@@ -119,7 +120,7 @@
 
             var sliceWidth = Math.ceil(this.element.width() / this.options.slices),
                 bgimage    = next.data('cover').css('background-image'),
-                ghost      = UI.$('<li class="uk-slideshow-ghost"></li>').css({
+                ghost      = UI.$('<li></li>').css({
                     width  : next.width(),
                     height : next.height(),
                     opacity: 1,
@@ -154,19 +155,17 @@
             ghost.width();
 
             ghost.children().first().on(UI.support.transition.end, function() {
-                setTimeout(function() {
-                    ghost.remove();
-                    d.resolve();
-                }, 0);
+                ghost.remove();
+                d.resolve();
             }).end().css({
-                transform: 'scaleX(1)',
-                opacity: 1
+                'transform': 'scaleX(1)',
+                'opacity': 1
             });
 
             return d.promise();
         },
 
-        puzzle: function(current, next, dir) {
+        'puzzle': function(current, next, dir) {
 
             if (!next.data('cover')) {
                 return Animations.fade.apply(this, arguments);
@@ -179,7 +178,7 @@
                 boxRows   = Math.round(next.height()/boxWidth),
                 boxHeight = Math.round(next.height()/boxRows)+1,
                 bgimage   = next.data('cover').css('background-image'),
-                ghost     = UI.$('<li class="uk-slideshow-ghost"></li>').css({
+                ghost     = UI.$('<li></li>').css({
                     width   : this.container.width(),
                     height  : this.container.height(),
                     opacity : 1,
@@ -229,21 +228,18 @@
                     '-webkit-transition': 'all '+$this.options.duration+'ms ease-in-out '+(50+i*25)+'ms'
                 });
             }).last().on(UI.support.transition.end, function() {
-
-                setTimeout(function() {
-                    ghost.remove();
-                    d.resolve();
-                }, 0);
+                ghost.remove();
+                d.resolve();
             });
 
             ghost.width();
 
-            boxes.css({opacity: 1});
+            boxes.css({'opacity': 1});
 
             return d.promise();
         },
 
-        boxes: function(current, next, dir, fromfx) {
+        'boxes': function(current, next, dir, fromfx) {
 
             if (!next.data('cover')) {
                 return Animations.fade.apply(this, arguments);
@@ -256,7 +252,7 @@
                 boxRows   = Math.round(next.height()/boxWidth),
                 boxHeight = Math.round(next.height()/boxRows)+1,
                 bgimage   = next.data('cover').css('background-image'),
-                ghost     = UI.$('<li class="uk-slideshow-ghost"></li>').css({
+                ghost     = UI.$('<li></li>').css({
                     width   : next.width(),
                     height  : next.height(),
                     opacity : 1,
@@ -336,11 +332,8 @@
             }
 
             boxes.last().on(UI.support.transition.end, function() {
-
-                setTimeout(function() {
-                    ghost.remove();
-                    d.resolve();
-                }, 0);
+                ghost.remove();
+                d.resolve();
             });
 
             ghost.width();

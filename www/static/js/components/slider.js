@@ -1,4 +1,4 @@
-/*! UIkit 2.27.2 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
+/*! UIkit 2.25.0 | http://www.getuikit.com | (c) 2014 YOOtheme | MIT License */
 (function(addon) {
 
     var component;
@@ -7,8 +7,8 @@
         component = addon(UIkit);
     }
 
-    if (typeof define == 'function' && define.amd) {
-        define('uikit-slider', ['uikit'], function(){
+    if (typeof define == "function" && define.amd) {
+        define("uikit-slider", ["uikit"], function(){
             return component || addon(UIkit);
         });
     }
@@ -59,7 +59,7 @@
             this.focus     = 0;
 
             UI.$win.on('resize load', UI.Utils.debounce(function() {
-                $this.update(true);
+                $this.resize(true);
             }, 100));
 
             this.on('click.uk.slider', '[data-uk-slider-item]', function(e) {
@@ -143,11 +143,11 @@
                 mouseleave: function() { $this.hovering = false; }
             });
 
-            this.update(true);
+            this.resize(true);
 
             this.on('display.uk.check', function(){
                 if ($this.element.is(":visible")) {
-                    $this.update(true);
+                    $this.resize(true);
                 }
             });
 
@@ -159,15 +159,9 @@
                 this.start();
             }
 
-            UI.domObserve(this.element, function(e) {
-                if ($this.element.children(':not([data-slider-slide])').length) {
-                    $this.update(true);
-                }
-            });
-
         },
 
-        update: function(focus) {
+        resize: function(focus) {
 
             var $this = this, pos = 0, maxheight = 0, item, width, cwidth, size;
 
@@ -178,7 +172,7 @@
 
             this.items.each(function(idx){
 
-                item      = UI.$(this).attr('data-slider-slide', idx);
+                item      = UI.$(this);
                 size      = item.css({'left': '', 'width':''})[0].getBoundingClientRect();
                 width     = size.width;
                 cwidth    = item.width();
@@ -202,7 +196,7 @@
 
                 this.itemsResized = true;
 
-                return this.update();
+                return this.resize();
             }
 
             this.cw     = pos;
@@ -370,9 +364,9 @@
                         var left = item.data('area');
 
                         itm.css({'left': left}).data({
-                            left  : left,
-                            area  : (left+itm.data('width')),
-                            center: (left - ($this.vp/2 - itm.data('cwidth')/2))
+                            'left'  : left,
+                            'area'  : (left+itm.data('width')),
+                            'center': (left - ($this.vp/2 - itm.data('cwidth')/2))
                         });
 
                         item = itm;
@@ -404,9 +398,9 @@
                         var left = item.data('left') - itm.data('width');
 
                         itm.css({'left': left}).data({
-                            left  : left,
-                            area  : (left+itm.data('width')),
-                            center: (left - ($this.vp/2 - itm.data('cwidth')/2))
+                            'left'  : left,
+                            'area'  : (left+itm.data('width')),
+                            'center': (left - ($this.vp/2 - itm.data('cwidth')/2))
                         });
 
                         item = itm;
@@ -519,9 +513,6 @@
 
                     z = z+1 == dragging.items.length ? 0:z+1;
                 }
-                if (!dragging.options.infinite && !focus) {
-                    focus = dragging.items.length;
-                }
 
             } else {
 
@@ -535,9 +526,6 @@
                     }
 
                     z = z-1 == -1 ? dragging.items.length-1:z-1;
-                }
-                if (!dragging.options.infinite && !focus) {
-                    focus = 0
                 }
             }
 
